@@ -3,10 +3,7 @@ package com.example.demo;
 import com.example.demo.model.Student;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,8 +29,17 @@ public class DemoApplicationTests {
 //		map.put("lastName","zhao");
 //		rabbitTemplate.convertAndSend("testDirect",map);
 //		rabbitTemplate.convertAndSend("yz",new Student("yangzhao","男"));
-//		rabbitTemplate.convertAndSend("yzExchange.fanout","",new Student("yangzhao111","男"));
-		rabbitTemplate.convertAndSend("yzExchange.topic","yz.zwl",new Student("yangzhao111","男"));
+
+		//direct
+//		rabbitTemplate.convertAndSend("yzExchange.direct","yz.zwl",new Student("yangzhao111","男"));
+//		rabbitTemplate.convertAndSend("zwl.yz",new Student("yangzhao","男"));
+
+//fanout
+//		rabbitTemplate.convertAndSend("yzExchange.fanout","yz.zwl",new Student("yangzhao","男"));
+
+//topic
+//		rabbitTemplate.convertAndSend("yzExchange.topic","yz.zwl",new Student("yangzhao","男"));
+		rabbitTemplate.convertAndSend("yzExchange.topic","zwl.news",new Student("yangzhao","男"));
 	}
 
 	@Test
@@ -44,33 +50,33 @@ public class DemoApplicationTests {
 	@Test
 	public void init() {
 //		amqpAdmin.declareExchange(new DirectExchange("yzExchange.direct"));
-//		amqpAdmin.declareExchange(new DirectExchange("yzExchange.fanout"));
-//		amqpAdmin.declareExchange(new DirectExchange("yzExchange.topic"));
+//		amqpAdmin.declareExchange(new FanoutExchange("yzExchange.fanout"));
+//		amqpAdmin.declareExchange(new TopicExchange("yzExchange.topic"));
 //
 //		amqpAdmin.declareQueue(new Queue("yz.zwl",true));
 //		amqpAdmin.declareQueue(new Queue("zwl.yz",true));
-//		amqpAdmin.declareQueue(new Queue("yz",true));
-//		amqpAdmin.declareQueue(new Queue("zwl",true));
+//		amqpAdmin.declareQueue(new Queue("yz.news",true));
+//		amqpAdmin.declareQueue(new Queue("yz.china",true));
+//		amqpAdmin.declareQueue(new Queue("zwl.news",true));
 
 //		amqpAdmin.deleteExchange("yzExchange.direct");
 //		amqpAdmin.deleteExchange("yzExchange.fanout");
 //		amqpAdmin.deleteExchange("yzExchange.topic");
-//
-//		amqpAdmin.deleteQueue("yz.zwl");
-//		amqpAdmin.deleteQueue("zwl.zwl");
-//		amqpAdmin.deleteQueue("yz");
-//		amqpAdmin.deleteQueue("zwl");
 
 
-//		amqpAdmin.declareBinding(new Binding("yz",Binding.DestinationType.QUEUE,"yzExchange.direct","yz",null));
-//		amqpAdmin.declareBinding(new Binding("yz",Binding.DestinationType.QUEUE,"yzExchange.fanout","",null));
-//		amqpAdmin.declareBinding(new Binding("zwl.yz",Binding.DestinationType.QUEUE,"yzExchange.fanout","",null));
 
+//direct
+//		amqpAdmin.declareBinding(new Binding("yz.zwl",Binding.DestinationType.QUEUE,"yzExchange.direct","yz.zwl",null));
+//		amqpAdmin.declareBinding(new Binding("zwl.yz",Binding.DestinationType.QUEUE,"yzExchange.direct","zwl.yz",null));
+//		amqpAdmin.declareBinding(new Binding("yz.news",Binding.DestinationType.QUEUE,"yzExchange.direct","yz.news",null));
+
+		//fanout
+//		amqpAdmin.declareBinding(new Binding("yz.zwl",Binding.DestinationType.QUEUE,"yzExchange.fanout","yz.zwl",null));
+//		amqpAdmin.declareBinding(new Binding("zwl.yz",Binding.DestinationType.QUEUE,"yzExchange.fanout","zwl.yz",null));
+
+		amqpAdmin.declareBinding(new Binding("zwl.yz",Binding.DestinationType.QUEUE,"yzExchange.topic","zwl.*",null));
 		amqpAdmin.declareBinding(new Binding("yz.zwl",Binding.DestinationType.QUEUE,"yzExchange.topic","*.zwl",null));
-		amqpAdmin.declareBinding(new Binding("zwl.yz",Binding.DestinationType.QUEUE,"yzExchange.topic","#.zwl",null));
-		amqpAdmin.declareBinding(new Binding("zwl",Binding.DestinationType.QUEUE,"yzExchange.topic","zwl",null));
-		amqpAdmin.declareBinding(new Binding("yz",Binding.DestinationType.QUEUE,"yzExchange.topic","yz",null));
-
+		amqpAdmin.declareBinding(new Binding("yz.news",Binding.DestinationType.QUEUE,"yzExchange.topic","#.news",null));
 
 	}
 
